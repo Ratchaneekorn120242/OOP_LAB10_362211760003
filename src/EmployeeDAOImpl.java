@@ -10,11 +10,26 @@ public class EmployeeDAOImpl implements EmployeeDAO{
     public static Connection conn = null;
 
 
+
+
     //
     //
     public static final String GET_ALL_EMP = "select * from Employee";
     public static  final  String ADD_New_EMP = "insert into Employee (emp_id,name,position,email,salary)values (?,?,?,?,?)";
     public static final String FIND_EMP_BY_ID = "select * from Employee where emp_id=?";
+
+    public  static final  String UPDATE_EMP = "update Employee " +
+            "set name = ?," +
+            "position = ?," +
+            "email= ?," +
+            "salary = ? " +
+            " where emp_id = ?";
+
+    public  static final String DELETE_EMP ="delete from Employee "
+            +"where emp_id=?";
+
+
+
     //
     private static EmployeeDAOImpl instane = new EmployeeDAOImpl();
     public  static EmployeeDAOImpl getInstance(){
@@ -130,11 +145,57 @@ public class EmployeeDAOImpl implements EmployeeDAO{
 
     @Override
     public void updateEmp(Employee employee) {
+        try {
+            conn = DriverManager.getConnection(url);
+            PreparedStatement ps = conn.prepareStatement(UPDATE_EMP);
+            //set parameters
+            ps.setString(1,employee.getName());
+            ps.setString(2,employee.getPosition());
+            ps.setString(3,employee.getEmail());
+            ps.setDouble(4,employee.getSalary());
+            ps.setString(5,employee.getEmp_id());
+
+            int rs = ps.executeUpdate(); //return 0 or 1
+            if (rs!= 0) {
+                System.out.println("Employee with id"+employee.getEmp_id()+"was updated.");
+            }else {
+                System.out.println("could not update employee with id"
+                        +employee.getEmp_id());
+            }
+            //
+            ps.close();
+            conn.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        //
+
 
     }
 
     @Override
-    public void deletEmp(String id) {
+    public void deleteEmp(String id) {
+        try {
+            conn = DriverManager.getConnection(url);
+            PreparedStatement ps = conn.prepareStatement(DELETE_EMP);
+            //set
+            ps.setString(1,id);
+
+            int rs = ps.executeUpdate();
+            if (rs != 0){
+                System.out.println("Employee not with id:"+id+"was deleted.");
+            }else {
+                System.out.println("could not delete employee with id:"+id);
+            }
+
+            //
+            ps.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
 
     }
 }

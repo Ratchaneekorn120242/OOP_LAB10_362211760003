@@ -7,5 +7,5 @@ public interface EmployeeDAO {
     public void addEmp (Employee emp);
     public Employee findById(String id);
     public  void  updateEmp(Employee employee);
-    public  void deletEmp (String id);
+    public  void deleteEmp (String id);
 }
